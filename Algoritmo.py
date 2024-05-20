@@ -92,12 +92,12 @@ def generar_video(historia):
         plt.title('Evolución de la Aptitud de la Población')
         plt.grid(True)
         
-        # Guardar el gráfico en un archivo temporal
+        # Guardar el gráfico 
         temp_file = f"temp_plot_{i}.png"
         plt.savefig(temp_file)
         plt.close()
         
-        # Leer la imagen del archivo temporal y escribirla en el video
+        # Leer la imagen 
         img = cv2.imread(temp_file)
         out.write(img)
         
@@ -122,12 +122,12 @@ def ejecutar_algoritmo():
     # Ejecutar el algoritmo
     historia = algoritmo_genetico(tam_poblacion, longitud, generaciones, tasa_cruce, tasa_mutacion)
 
-    # Generar el video de la evolución de las gráficas
+    # Video de la evolución 
     generar_video(historia)
 
     # Crear y mostrar la ventana de la tabla con los datos de la mejor solución
     ventana_tabla = tk.Toplevel()
-    ventana_tabla.title("Mejor Solución Encontrada")
+    ventana_tabla.title("Mejor Solución ")
 
     poblacion_final = historia[-1][0]
     aptitudes_finales = [calcular_aptitud(ind) for ind in poblacion_final]
@@ -136,34 +136,38 @@ def ejecutar_algoritmo():
     mejor_x = decodificar_individuo(mejor_individuo)
     mejor_aptitud = aptitudes_finales[indice_mejor]
 
-    datos_tabla = {
-        'Cadena de Bits': [''.join(map(str, mejor_individuo))],
-        'Índice': [indice_mejor],
-        'Valor de x': [mejor_x],
-        'Valor de Aptitud': [mejor_aptitud]
-    }
-    df = pd.DataFrame(datos_tabla)
-    
-    tabla = ttk.Treeview(ventana_tabla)
-    tabla['columns'] = list(datos_tabla.keys())
-    tabla.heading("#0", text="Item")
-    for col in datos_tabla.keys():
+    # Crear la tabla con los datos de la mejor solución
+    frame = ttk.Frame(ventana_tabla, padding="10")
+    frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+
+    columnas = ["Cadena de Bits", "Índice", "Valor de x", "Valor de Aptitud"]
+    tabla = ttk.Treeview(frame, columns=columnas, show='headings')
+
+    for col in columnas:
         tabla.heading(col, text=col)
-        tabla.column(col, width=100)
-    for i, (clave, valor) in enumerate(datos_tabla.items()):
-        tabla.insert('', 'end', text=clave, values=valor)
+        tabla.column(col, width=150, anchor=tk.CENTER)
+
+    tabla.insert('', 'end', values=(
+        ''.join(map(str, mejor_individuo)),
+        indice_mejor,
+        mejor_x,
+        mejor_aptitud
+    ))
 
     tabla.pack()
 
-# Crear la interfaz gráfica para ingresar los parámetros del algoritmo
+# Interfaz gráfica 
 root = tk.Tk()
 root.title("Algoritmo Genético")
 
-tk.Label(root, text="Tamaño de la población:").grid(row=0, column=0)
-tk.Label(root, text="Longitud del individuo (bits):").grid(row=1, column=0)
-tk.Label(root, text="Número de generaciones:").grid(row=2, column=0)
-tk.Label(root, text="Tasa de cruce:").grid(row=3, column=0)
-tk.Label(root, text="Tasa de mutación:").grid(row=4, column=0)
+frame_principal = ttk.Frame(root, padding="10")
+frame_principal.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+
+ttk.Label(frame_principal, text="Tamaño de la población:").grid(row=0, column=0, sticky=tk.W, pady=2)
+ttk.Label(frame_principal, text="Longitud del individuo (bits):").grid(row=1, column=0, sticky=tk.W, pady=2)
+ttk.Label(frame_principal, text="Número de generaciones:").grid(row=2, column=0, sticky=tk.W, pady=2)
+ttk.Label(frame_principal, text="Tasa de cruce:").grid(row=3, column=0, sticky=tk.W, pady=2)
+ttk.Label(frame_principal, text="Tasa de mutación:").grid(row=4, column=0, sticky=tk.W, pady=2)
 
 tam_poblacion_var = tk.StringVar()
 longitud_var = tk.StringVar()
@@ -171,13 +175,13 @@ generaciones_var = tk.StringVar()
 tasa_cruce_var = tk.StringVar()
 tasa_mutacion_var = tk.StringVar()
 
-tk.Entry(root, textvariable=tam_poblacion_var).grid(row=0, column=1)
-tk.Entry(root, textvariable=longitud_var).grid(row=1, column=1)
-tk.Entry(root, textvariable=generaciones_var).grid(row=2, column=1)
-tk.Entry(root, textvariable=tasa_cruce_var).grid(row=3, column=1)
-tk.Entry(root, textvariable=tasa_mutacion_var).grid(row=4, column=1)
+ttk.Entry(frame_principal, textvariable=tam_poblacion_var).grid(row=0, column=1, pady=2)
+ttk.Entry(frame_principal, textvariable=longitud_var).grid(row=1, column=1, pady=2)
+ttk.Entry(frame_principal, textvariable=generaciones_var).grid(row=2, column=1, pady=2)
+ttk.Entry(frame_principal, textvariable=tasa_cruce_var).grid(row=3, column=1, pady=2)
+ttk.Entry(frame_principal, textvariable=tasa_mutacion_var).grid(row=4, column=1, pady=2)
 
-tk.Button(root, text="Ejecutar Algoritmo", command=ejecutar_algoritmo).grid(row=5, columnspan=2)
+ttk.Button(frame_principal, text="Ejecutar Algoritmo", command=ejecutar_algoritmo).grid(row=5, columnspan=2, pady=5)
 
-# Ejecutar la ventana principal
+# Ejecuta la ventana principal
 root.mainloop()
