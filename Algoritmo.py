@@ -8,13 +8,13 @@ from tkinter import messagebox
 
 # Función de aptitud
 def funcion_aptitud(x):
-    return x**2  # Ejemplo de función de aptitud
+    return x**2  # Función de aptitud
 
 # Crear individuo
 def crear_individuo(longitud):
     return np.random.randint(2, size=longitud)
 
-# Decodificar cadena de bits a valor real
+# Cadena de bits a valor real
 def decodificar_individuo(individuo):
     cadena_binaria = ''.join(str(bit) for bit in individuo)
     return int(cadena_binaria, 2)
@@ -26,7 +26,7 @@ def calcular_aptitud(individuo):
 
 # Selección
 def seleccion(poblacion, aptitudes):
-    probabilidades = aptitudes / np.sum(aptitudes)  # Corregido
+    probabilidades = aptitudes / np.sum(aptitudes) 
     indices_seleccionados = np.random.choice(len(poblacion), size=len(poblacion), p=probabilidades)
     return np.array(poblacion)[indices_seleccionados]
 
@@ -71,8 +71,8 @@ def algoritmo_genetico(tam_poblacion, longitud, generaciones, tasa_cruce, tasa_m
 
         poblacion_seleccionada = seleccion(poblacion, aptitudes)
         nueva_poblacion = []
-        for i in range(0, len(poblacion_seleccionada), 2):  # Corregido
-            if i + 1 < len(poblacion_seleccionada):  # Corregido
+        for i in range(0, len(poblacion_seleccionada), 2): 
+            if i + 1 < len(poblacion_seleccionada):  
                 padre1, padre2 = poblacion_seleccionada[i], poblacion_seleccionada[i+1]
                 hijo1 = mutacion(cruce(padre1, padre2, tasa_cruce), tasa_mutacion_individuo)
                 hijo2 = mutacion(cruce(padre2, padre1, tasa_cruce), tasa_mutacion_individuo)
@@ -94,7 +94,7 @@ def generar_video(historia):
     peores_aptitudes = [gen_data[2] for gen_data in historia]
     promedios_aptitudes = [gen_data[3] for gen_data in historia]
 
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Cambiado a formato mp4
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  
     out = cv2.VideoWriter('evolucion_aptitud.mp4', fourcc, 1, (800, 600))
 
     for i in range(generaciones):
@@ -205,6 +205,5 @@ ttk.Entry(frame_principal, textvariable=tasa_mutacion_individuo_var).grid(row=5,
 
 ttk.Button(frame_principal, text="Ejecutar Algoritmo", command=ejecutar_algoritmo).grid(row=6, columnspan=2, pady=5)
 
-# Ejecuta la ventana principal
 root.mainloop()
 
